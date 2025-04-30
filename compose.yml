@@ -1,4 +1,4 @@
-name: revolt
+version: "3.8"
 
 services:
   # MongoDB: Database
@@ -49,7 +49,6 @@ services:
       default:
         aliases:
           - revolt-uploads.minio
-          # legacy support:
           - attachments.minio
           - avatars.minio
           - backgrounds.minio
@@ -58,22 +57,11 @@ services:
           - emojis.minio
     restart: always
 
-  # Caddy: Web server
-  caddy:
-    image: docker.io/caddy
-    restart: always
-    env_file: stack.env
-    ports:
-      - "8880:80"
-      - "7443:443"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - ./data/caddy-data:/data
-      - ./data/caddy-config:/config
-
   # API server
   api:
     image: ghcr.io/revoltchat/server:20250210-1
+    ports:
+      - "1234:14702"
     depends_on:
       database:
         condition: service_healthy
@@ -82,52 +70,52 @@ services:
       rabbit:
         condition: service_healthy
     volumes:
-      - type: bind
-        source: ./Revolt.toml
-        target: /Revolt.toml
+      - ./Revolt.toml:/Revolt.toml
     restart: always
 
   # Events service
   events:
     image: ghcr.io/revoltchat/bonfire:20250210-1
+    ports:
+      - "1235:14703"
     depends_on:
       database:
         condition: service_healthy
       redis:
         condition: service_started
     volumes:
-      - type: bind
-        source: ./Revolt.toml
-        target: /Revolt.toml
+      - ./Revolt.toml:/Revolt.toml
     restart: always
 
   # Web App
   web:
     image: ghcr.io/revoltchat/client:master
+    ports:
+      - "1236:5000"
     restart: always
     env_file: stack.env
 
   # File server
   autumn:
     image: ghcr.io/revoltchat/autumn:20250210-1
+    ports:
+      - "1237:14704"
     depends_on:
       database:
         condition: service_healthy
       createbuckets:
         condition: service_started
     volumes:
-      - type: bind
-        source: ./Revolt.toml
-        target: /Revolt.toml
+      - ./Revolt.toml:/Revolt.toml
     restart: always
 
   # Metadata and image proxy
   january:
     image: ghcr.io/revoltchat/january:20250210-1
+    ports:
+      - "1238:14705"
     volumes:
-      - type: bind
-        source: ./Revolt.toml
-        target: /Revolt.toml
+      - ./Revolt.toml:/Revolt.toml
     restart: always
 
   # Regular task daemon
@@ -139,9 +127,7 @@ services:
       minio:
         condition: service_started
     volumes:
-      - type: bind
-        source: ./Revolt.toml
-        target: /Revolt.toml
+      - ./Revolt.toml:/Revolt.toml
     restart: always
 
   # Push notification daemon
@@ -155,12 +141,10 @@ services:
       rabbit:
         condition: service_healthy
     volumes:
-      - type: bind
-        source: ./Revolt.toml
-        target: /Revolt.toml
+      - ./Revolt.toml:/Revolt.toml
     restart: always
 
-  # Create buckets for minio.
+  # Create buckets for minio
   createbuckets:
     image: docker.io/minio/mc
     depends_on:
