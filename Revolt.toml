@@ -1,0 +1,13 @@
+[hosts]
+app = "https://www.revolt.xoure.com"
+api = "https://www.revolt.xoure.com/api"
+events = "wss://www.revolt.xoure.com/ws"
+autumn = "https://www.revolt.xoure.com/autumn"
+january = "https://www.revolt.xoure.com/january"
+
+[pushd.vapid]
+private_key = "LS0tLS1CRUdJTiBFQyBQUklWQVRFIEtFWS0tLS0tDQpNSGNDQVFFRUlKNVEzNmJPSDlIQWFKQ2duU3p6Qnc1TDByVStOOXI2TXY1K3FCYmthSjFxb0FvR0NDcUdTTTQ5DQpBd0VIb1VRRFFnQUV2R0dzNVIxUjhhU3hxOVBZZnNSSHJ3enBITm16Q0RvbXJFeUhBL0pKOGtGY0dRL0F2Y1p0DQpmSXRRMDgzTXN6alcyV29uUVpaTGloa0c4UmZtb1NxTGlRPT0NCi0tLS0tRU5EIEVDIFBSSVZBVEUgS0VZLS0tLS0NCg"
+public_key = "BLxhrOUdUfGksavT2H7ER68M6RzZswg6JqxMhwPySfJBXBkPwL3GbXyLUNPNzLM41tlqJ0GWS4oZBvEX5qEqi4k"
+
+[files]
+encryption_key = "+3K3F1qAKZCNcMA2fulmUpzzVXJ47TaDfQ4DgmbShR8="
