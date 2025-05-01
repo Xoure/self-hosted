@@ -91,7 +91,7 @@ services:
   web:
     image: ghcr.io/revoltchat/client:master
     ports:
-      - "1236:5000"
+      - "14702:5000"
     restart: always
     env_file: stack.env
 
