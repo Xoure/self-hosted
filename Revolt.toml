@@ -1,5 +1,5 @@
 [hosts]
-app = "http://192.168.1.131:1236"
+app = "http://192.168.1.131:14702"
 api = "http://192.168.1.131:1234"
 events = "ws://localhost:1235"
 autumn = "http://localhost:1237"
