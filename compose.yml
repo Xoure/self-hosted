@@ -7,13 +7,6 @@ services:
     restart: always
     volumes:
       - ./data/db:/data/db
-    healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
-      interval: 10s
-      timeout: 10s
-      retries: 5
-      start_period: 10s
-
   # Redis: Event message broker & KV store
   redis:
     image: docker.io/eqalpha/keydb
@@ -58,11 +51,10 @@ services:
       - "1234:14702"
     depends_on:
       database:
-        condition: service_healthy
       redis:
         condition: service_started
       rabbit:
-        condition: service_healthy
+        condition: service_started
     volumes:
       - ./Revolt.toml:/Revolt.toml
     restart: always
@@ -74,7 +66,7 @@ services:
       - "1235:14703"
     depends_on:
       database:
-        condition: service_healthy
+        condition: service_started
       redis:
         condition: service_started
     volumes:
@@ -96,7 +88,7 @@ services:
       - "1237:14704"
     depends_on:
       database:
-        condition: service_healthy
+        condition: service_started
       createbuckets:
         condition: service_started
     volumes:
@@ -117,7 +109,7 @@ services:
     image: ghcr.io/revoltchat/crond:20250210-1-debug
     depends_on:
       database:
-        condition: service_healthy
+        condition: service_started
       minio:
         condition: service_started
     volumes:
@@ -129,11 +121,11 @@ services:
     image: ghcr.io/revoltchat/pushd:20250210-1
     depends_on:
       database:
-        condition: service_healthy
+        condition: service_started
       redis:
         condition: service_started
       rabbit:
-        condition: service_healthy
+        condition: service_started
     volumes:
       - ./Revolt.toml:/Revolt.toml
     restart: always
