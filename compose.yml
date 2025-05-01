@@ -81,7 +81,7 @@ services:
     ports:
       - "14702:5000"
     restart: always
-    env_file: stack.env
+    env_file: ./share/Container/revolt/stack.env
 
   # File server
   autumn:
@@ -146,3 +146,7 @@ services:
       /usr/bin/mc mb minio/revolt-uploads || true;
       exit 0;
       "
+
+networks:
+  default:
+    name: revolt-network
