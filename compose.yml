@@ -56,7 +56,7 @@ services:
       rabbit:
         condition: service_started
     volumes:
-      - ./share/Container/revolt/Revolt.toml:/Revolt.toml
+      - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
 
   # Events service
@@ -70,7 +70,7 @@ services:
       redis:
         condition: service_started
     volumes:
-      - ./share/Container/revolt/Revolt.toml:/Revolt.toml
+      - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
 
   # Web App
@@ -94,7 +94,7 @@ services:
       createbuckets:
         condition: service_started
     volumes:
-      - ./share/Container/revolt/Revolt.toml:/Revolt.toml
+      - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
 
   # Metadata and image proxy
@@ -103,7 +103,7 @@ services:
     ports:
       - "1238:14705"
     volumes:
-      - ./share/Container/revolt/Revolt.toml:/Revolt.toml
+      - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
 
   # Regular task daemon
@@ -115,7 +115,7 @@ services:
       minio:
         condition: service_started
     volumes:
-      - ./share/Container/revolt/Revolt.toml:/Revolt.toml
+      - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
 
   # Push notification daemon
@@ -129,7 +129,7 @@ services:
       rabbit:
         condition: service_started
     volumes:
-      - ./share/Container/revolt/Revolt.toml:/Revolt.toml
+      - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
 
   # Create buckets for MinIO
