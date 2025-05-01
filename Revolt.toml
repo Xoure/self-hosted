@@ -1,6 +1,6 @@
 [hosts]
-app = "http://localhost:1236"
-api = "http://localhost:1234"
+app = "http://192.168.1.131:1236"
+api = "http://192.168.1.131:1234"
 events = "ws://localhost:1235"
 autumn = "http://localhost:1237"
 january = "http://localhost:1238"
