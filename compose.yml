@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   # MongoDB: Database
   database:
@@ -81,7 +79,9 @@ services:
     ports:
       - "14702:5000"
     restart: always
-    env_file: ./share/Container/revolt/stack.env
+    environment:
+      HOSTNAME: localhost:1236
+      REVOLT_PUBLIC_URL: http://localhost:1234
 
   # File server
   autumn:
@@ -132,7 +132,7 @@ services:
       - ./share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
 
-  # Create buckets for minio
+  # Create buckets for MinIO
   createbuckets:
     image: docker.io/minio/mc
     depends_on:
