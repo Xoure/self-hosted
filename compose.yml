@@ -56,8 +56,6 @@ services:
 
   api:
     image: ghcr.io/revoltchat/server:20250210-1
-    ports:
-      - "1234:14702"
     depends_on:
       database:
         condition: service_started
@@ -73,8 +71,6 @@ services:
 
   events:
     image: ghcr.io/revoltchat/bonfire:20250210-1
-    ports:
-      - "1235:14703"
     depends_on:
       database:
         condition: service_started
@@ -88,8 +84,6 @@ services:
 
   web:
     image: ghcr.io/revoltchat/client:master
-    ports:
-      - "14702:5000"
     environment:
       HOSTNAME: revolt.app-xoure.com
       REVOLT_PUBLIC_URL: https://api.app-xoure.com
@@ -99,8 +93,6 @@ services:
 
   autumn:
     image: ghcr.io/revoltchat/autumn:20250210-1
-    ports:
-      - "1237:14704"
     depends_on:
       database:
         condition: service_started
@@ -114,8 +106,6 @@ services:
 
   january:
     image: ghcr.io/revoltchat/january:20250210-1
-    ports:
-      - "1238:14705"
     volumes:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
