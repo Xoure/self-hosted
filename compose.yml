@@ -98,7 +98,9 @@ services:
   web:
     image: ghcr.io/revoltchat/client:master
     restart: always
-    env_file: .env.web
+     environment:
+       HOSTNAME: revolt.xoure.com
+       REVOLT_PUBLIC_URL: https://revolt.xoure.com
 
   # File server
   autumn:
