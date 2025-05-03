@@ -13,14 +13,12 @@ services:
     restart: always
     volumes:
       - /share/Container/revolt/revolt_data/data/db:/data/db
-    networks:
-      - host
+    network_mode: host
 
   redis:
     image: eqalpha/keydb
     restart: always
-    networks:
-      - host
+    network_mode: host
 
   rabbit:
     image: rabbitmq:4
@@ -30,8 +28,7 @@ services:
       RABBITMQ_DEFAULT_PASS: rabbitpass
     volumes:
       - /share/Container/revolt/revolt_data/data/rabbit:/var/lib/rabbitmq
-    networks:
-      - host
+    network_mode: host
 
   minio:
     image: minio/minio
@@ -42,16 +39,15 @@ services:
       MINIO_ROOT_USER: minioautumn
       MINIO_ROOT_PASSWORD: minioautumn
       MINIO_DOMAIN: minio
-    networks:
-      host:
-        aliases:
-          - revolt-uploads.minio
-          - attachments.minio
-          - avatars.minio
-          - backgrounds.minio
-          - icons.minio
-          - banners.minio
-          - emojis.minio
+    network_mode: host
+    extra_hosts:
+      - revolt-uploads.minio:127.0.0.1
+      - attachments.minio:127.0.0.1
+      - avatars.minio:127.0.0.1
+      - backgrounds.minio:127.0.0.1
+      - icons.minio:127.0.0.1
+      - banners.minio:127.0.0.1
+      - emojis.minio:127.0.0.1
     restart: always
 
   api:
@@ -66,8 +62,7 @@ services:
     volumes:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
-    networks:
-      - host
+    network_mode: host
 
   events:
     image: ghcr.io/revoltchat/bonfire:20250210-1
@@ -79,8 +74,7 @@ services:
     volumes:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
-    networks:
-      - host
+    network_mode: host
 
   web:
     image: ghcr.io/revoltchat/client:master
@@ -88,8 +82,7 @@ services:
       HOSTNAME: revolt.app-xoure.com
       REVOLT_PUBLIC_URL: https://api.app-xoure.com
     restart: always
-    networks:
-      - host
+    network_mode: host
 
   autumn:
     image: ghcr.io/revoltchat/autumn:20250210-1
@@ -101,16 +94,14 @@ services:
     volumes:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
-    networks:
-      - host
+    network_mode: host
 
   january:
     image: ghcr.io/revoltchat/january:20250210-1
     volumes:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
-    networks:
-      - host
+    network_mode: host
 
   crond:
     image: ghcr.io/revoltchat/crond:20250210-1-debug
@@ -122,8 +113,7 @@ services:
     volumes:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
-    networks:
-      - host
+    network_mode: host
 
   pushd:
     image: ghcr.io/revoltchat/pushd:20250210-1
@@ -137,8 +127,7 @@ services:
     volumes:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
-    networks:
-      - host
+    network_mode: host
 
   createbuckets:
     image: minio/mc
@@ -153,8 +142,7 @@ services:
       /usr/bin/mc mb minio/revolt-uploads || true;
       exit 0;
       "
-    networks:
-      - host
+    network_mode: host
 
 networks:
   host:
