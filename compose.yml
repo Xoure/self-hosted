@@ -60,7 +60,9 @@ services:
   caddy:
     image: docker.io/caddy
     restart: always
-    env_file: .env.web
+    environment:
+      HOSTNAME: revolt.xoure.com
+      REVOLT_PUBLIC_URL: https://revolt.xoure.com
     ports:
       - "5555:80"
     volumes:
@@ -98,9 +100,9 @@ services:
   web:
     image: ghcr.io/revoltchat/client:master
     restart: always
-     environment:
-       HOSTNAME: revolt.xoure.com
-       REVOLT_PUBLIC_URL: https://revolt.xoure.com
+    environment:
+      HOSTNAME: revolt.xoure.com
+      REVOLT_PUBLIC_URL: https://revolt.xoure.com
 
   # File server
   autumn:
