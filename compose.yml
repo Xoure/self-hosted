@@ -66,9 +66,9 @@ services:
     ports:
       - "5555:80"
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - ./data/caddy-data:/data
-      - ./data/caddy-config:/config
+      - /share/Container/revolt/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - /share/Container/revolt/caddy/data:/data
+      - /share/Container/revolt/caddy/config:/config
 
   # API server
   api:
