@@ -1,13 +1,6 @@
 version: '3.8'
 
 services:
-  reverse:
-    image: cloudflare/cloudflared:latest
-    command: tunnel --no-autoupdate run --token eyJhIjoiZjAyYzI3YTY5MDllYzdmMTJiMzQ1NGZhYjIzM2I3MWUiLCJ0IjoiNzUzYTRmZTEtN2VlMS00M2QzLTlkYzUtOTUyYWEwZmYwYWY5IiwicyI6Ik1tUTBOMkpqWmpZdE9XUmlPUzAwT1dVMkxUZzJaR0l0WXpFMll6QmhPVFU1TldJeiJ9
-    restart: always
-    networks:
-      - revolt-network
-
   database:
     image: mongo
     restart: always
@@ -85,8 +78,8 @@ services:
   web:
     image: ghcr.io/revoltchat/client:master
     environment:
-      HOSTNAME: revolt.app-xoure.com
-      REVOLT_PUBLIC_URL: https://api.app-xoure.com
+      HOSTNAME: revolt.xoure.com
+      REVOLT_PUBLIC_URL: https://api.revolt.xoure.com
     restart: always
     networks:
       - revolt-network
