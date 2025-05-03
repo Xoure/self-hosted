@@ -1,33 +1,41 @@
-version: '3.8'
-
 services:
+  # MongoDB: Database
   database:
-    image: mongo
+    image: docker.io/mongo
     restart: always
     volumes:
       - /share/Container/revolt/revolt_data/data/db:/data/db
-    networks:
-      - revolt-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
 
+  # Redis: Event message broker & KV store
   redis:
-    image: eqalpha/keydb
+    image: docker.io/eqalpha/keydb
     restart: always
-    networks:
-      - revolt-network
 
+  # RabbitMQ: Internal message broker
   rabbit:
-    image: rabbitmq:4
+    image: docker.io/rabbitmq:4
     restart: always
     environment:
       RABBITMQ_DEFAULT_USER: rabbituser
       RABBITMQ_DEFAULT_PASS: rabbitpass
     volumes:
       - /share/Container/revolt/revolt_data/data/rabbit:/var/lib/rabbitmq
-    networks:
-      - revolt-network
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
+  # MinIO: S3-compatible storage server
   minio:
-    image: minio/minio
+    image: docker.io/minio/minio
     command: server /data
     volumes:
       - /share/Container/revolt/revolt_data/data/minio:/data
@@ -36,9 +44,10 @@ services:
       MINIO_ROOT_PASSWORD: minioautumn
       MINIO_DOMAIN: minio
     networks:
-      revolt-network:
+      default:
         aliases:
           - revolt-uploads.minio
+          # legacy support:
           - attachments.minio
           - avatars.minio
           - backgrounds.minio
@@ -47,110 +56,107 @@ services:
           - emojis.minio
     restart: always
 
+  # Caddy: Web server
+  caddy:
+    image: docker.io/caddy
+    restart: always
+    env_file: .env.web
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./data/caddy-data:/data
+      - ./data/caddy-config:/config
+
+  # API server
   api:
     image: ghcr.io/revoltchat/server:20250210-1
     depends_on:
       database:
-        condition: service_started
+        condition: service_healthy
       redis:
         condition: service_started
       rabbit:
-        condition: service_started
+        condition: service_healthy
     volumes:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
-    networks:
-      - revolt-network
 
+  # Events service
   events:
     image: ghcr.io/revoltchat/bonfire:20250210-1
     depends_on:
       database:
-        condition: service_started
+        condition: service_healthy
       redis:
         condition: service_started
     volumes:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
-    networks:
-      - revolt-network
 
+  # Web App
   web:
     image: ghcr.io/revoltchat/client:master
-    environment:
-      HOSTNAME: revolt.xoure.com
-      REVOLT_PUBLIC_URL: https://api.revolt.xoure.com
     restart: always
-    networks:
-      - revolt-network
-    ports:
-      - 5555:5000
+    env_file: .env.web
 
+  # File server
   autumn:
     image: ghcr.io/revoltchat/autumn:20250210-1
     depends_on:
       database:
-        condition: service_started
+        condition: service_healthy
       createbuckets:
         condition: service_started
     volumes:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
-    networks:
-      - revolt-network
 
+  # Metadata and image proxy
   january:
     image: ghcr.io/revoltchat/january:20250210-1
     volumes:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
-    networks:
-      - revolt-network
 
+  # Regular task daemon
   crond:
     image: ghcr.io/revoltchat/crond:20250210-1-debug
     depends_on:
       database:
-        condition: service_started
+        condition: service_healthy
       minio:
         condition: service_started
     volumes:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
-    networks:
-      - revolt-network
 
+  # Push notification daemon
   pushd:
     image: ghcr.io/revoltchat/pushd:20250210-1
     depends_on:
       database:
-        condition: service_started
+        condition: service_healthy
       redis:
         condition: service_started
       rabbit:
-        condition: service_started
+        condition: service_healthy
     volumes:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
-    networks:
-      - revolt-network
 
+  # Create buckets for minio.
   createbuckets:
-    image: minio/mc
+    image: docker.io/minio/mc
     depends_on:
-      minio:
-        condition: service_started
+      - minio
     entrypoint: >
       /bin/sh -c "
-      while ! /usr/bin/mc alias set minio http://minio:9000 minioautumn minioautumn; do
-        echo 'Waiting for MinIO...' && sleep 1;
+      while ! /usr/bin/mc ready minio; do
+        /usr/bin/mc config host add minio http://minio:9000 minioautumn minioautumn;
+        echo 'Waiting minio...' && sleep 1;
       done;
-      /usr/bin/mc mb minio/revolt-uploads || true;
+      /usr/bin/mc mb minio/revolt-uploads;
       exit 0;
       "
-    networks:
-      - revolt-network
-
-networks:
-  revolt-network:
-    name: revolt-network
