@@ -6,7 +6,7 @@ services:
 #    command: tunnel --no-autoupdate run --token eyJhIjoiZjAyYzI3YTY5MDllYzdmMTJiMzQ1NGZhYjIzM2I3MWUiLCJ0IjoiNzUzYTRmZTEtN2VlMS00M2QzLTlkYzUtOTUyYWEwZmYwYWY5IiwicyI6Ik1tUTBOMkpqWmpZdE9XUmlPUzAwT1dVMkxUZzJaR0l0WXpFMll6QmhPVFU1TldJeiJ9
 #    restart: always
 #    networks:
-#      - bridge
+#      - host
 
   database:
     image: mongo
@@ -14,13 +14,13 @@ services:
     volumes:
       - /share/Container/revolt/revolt_data/data/db:/data/db
     networks:
-      - bridge
+      - host
 
   redis:
     image: eqalpha/keydb
     restart: always
     networks:
-      - bridge
+      - host
 
   rabbit:
     image: rabbitmq:4
@@ -31,7 +31,7 @@ services:
     volumes:
       - /share/Container/revolt/revolt_data/data/rabbit:/var/lib/rabbitmq
     networks:
-      - bridge
+      - host
 
   minio:
     image: minio/minio
@@ -43,7 +43,7 @@ services:
       MINIO_ROOT_PASSWORD: minioautumn
       MINIO_DOMAIN: minio
     networks:
-      bridge:
+      host:
         aliases:
           - revolt-uploads.minio
           - attachments.minio
@@ -67,7 +67,7 @@ services:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
     networks:
-      - bridge
+      - host
 
   events:
     image: ghcr.io/revoltchat/bonfire:20250210-1
@@ -80,7 +80,7 @@ services:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
     networks:
-      - bridge
+      - host
 
   web:
     image: ghcr.io/revoltchat/client:master
@@ -89,7 +89,7 @@ services:
       REVOLT_PUBLIC_URL: https://api.app-xoure.com
     restart: always
     networks:
-      - bridge
+      - host
 
   autumn:
     image: ghcr.io/revoltchat/autumn:20250210-1
@@ -102,7 +102,7 @@ services:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
     networks:
-      - bridge
+      - host
 
   january:
     image: ghcr.io/revoltchat/january:20250210-1
@@ -110,7 +110,7 @@ services:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
     networks:
-      - bridge
+      - host
 
   crond:
     image: ghcr.io/revoltchat/crond:20250210-1-debug
@@ -123,7 +123,7 @@ services:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
     networks:
-      - bridge
+      - host
 
   pushd:
     image: ghcr.io/revoltchat/pushd:20250210-1
@@ -138,7 +138,7 @@ services:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
     networks:
-      - bridge
+      - host
 
   createbuckets:
     image: minio/mc
@@ -154,8 +154,9 @@ services:
       exit 0;
       "
     networks:
-      - bridge
+      - host
 
 networks:
-  bridge:
-    name: bridge
+  host:
+    name: host
+    external: true
