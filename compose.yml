@@ -1,7 +1,7 @@
 services:
   # MongoDB: Database
   database:
-    image: docker.io/mongo
+    image: docker.io/mongo:latest
     restart: always
     volumes:
       - /share/Container/revolt/revolt_data/data/db:/data/db
@@ -14,7 +14,7 @@ services:
 
   # Redis: Event message broker & KV store
   redis:
-    image: docker.io/eqalpha/keydb
+    image: docker.io/eqalpha/keydb:latest
     restart: always
 
   # RabbitMQ: Internal message broker
@@ -35,7 +35,7 @@ services:
 
   # MinIO: S3-compatible storage server
   minio:
-    image: docker.io/minio/minio
+    image: docker.io/minio/minio:latest
     command: server /data
     volumes:
       - /share/Container/revolt/revolt_data/data/minio:/data
@@ -58,7 +58,7 @@ services:
 
   # Caddy: Web server
   caddy:
-    image: docker.io/caddy
+    image: docker.io/caddy:latest
     restart: always
     environment:
       HOSTNAME: :80
@@ -72,7 +72,7 @@ services:
 
   # API server
   api:
-    image: ghcr.io/revoltchat/server
+    image: ghcr.io/revoltchat/server:latest
     depends_on:
       database:
         condition: service_healthy
@@ -86,7 +86,7 @@ services:
 
   # Events service
   events:
-    image: ghcr.io/revoltchat/bonfire
+    image: ghcr.io/revoltchat/bonfire:latest
     depends_on:
       database:
         condition: service_healthy
@@ -106,7 +106,7 @@ services:
 
   # File server
   autumn:
-    image: ghcr.io/revoltchat/autumn
+    image: ghcr.io/revoltchat/autumn:latest
     depends_on:
       database:
         condition: service_healthy
@@ -118,14 +118,14 @@ services:
 
   # Metadata and image proxy
   january:
-    image: ghcr.io/revoltchat/january
+    image: ghcr.io/revoltchat/january:latest
     volumes:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
 
   # Regular task daemon
   crond:
-    image: ghcr.io/revoltchat/crond
+    image: ghcr.io/revoltchat/crond:20250210-1-debug
     depends_on:
       database:
         condition: service_healthy
@@ -137,7 +137,7 @@ services:
 
   # Push notification daemon
   pushd:
-    image: ghcr.io/revoltchat/pushd
+    image: ghcr.io/revoltchat/pushd:latest
     depends_on:
       database:
         condition: service_healthy
@@ -151,7 +151,7 @@ services:
 
   # Create buckets for minio.
   createbuckets:
-    image: docker.io/minio/mc
+    image: docker.io/minio/mc:latest
     depends_on:
       - minio
     entrypoint: >
