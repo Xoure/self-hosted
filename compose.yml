@@ -61,7 +61,7 @@ services:
     image: docker.io/caddy
     restart: always
     environment:
-      HOSTNAME: revolt.xoure.com
+      HOSTNAME: :80
       REVOLT_PUBLIC_URL: https://revolt.xoure.com
     ports:
       - "5555:80"
