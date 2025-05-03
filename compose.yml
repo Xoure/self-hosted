@@ -1,12 +1,12 @@
 version: '3.8'
 
 services:
-  reverse:
-    image: cloudflare/cloudflared:latest
-    command: tunnel --no-autoupdate run --token eyJhIjoiZjAyYzI3YTY5MDllYzdmMTJiMzQ1NGZhYjIzM2I3MWUiLCJ0IjoiNzUzYTRmZTEtN2VlMS00M2QzLTlkYzUtOTUyYWEwZmYwYWY5IiwicyI6Ik1tUTBOMkpqWmpZdE9XUmlPUzAwT1dVMkxUZzJaR0l0WXpFMll6QmhPVFU1TldJeiJ9
-    restart: always
-    networks:
-      - revolt-network
+#  reverse:
+#    image: cloudflare/cloudflared:latest
+#    command: tunnel --no-autoupdate run --token eyJhIjoiZjAyYzI3YTY5MDllYzdmMTJiMzQ1NGZhYjIzM2I3MWUiLCJ0IjoiNzUzYTRmZTEtN2VlMS00M2QzLTlkYzUtOTUyYWEwZmYwYWY5IiwicyI6Ik1tUTBOMkpqWmpZdE9XUmlPUzAwT1dVMkxUZzJaR0l0WXpFMll6QmhPVFU1TldJeiJ9
+#    restart: always
+#    networks:
+#      - bridge
 
   database:
     image: mongo
@@ -14,13 +14,13 @@ services:
     volumes:
       - /share/Container/revolt/revolt_data/data/db:/data/db
     networks:
-      - revolt-network
+      - bridge
 
   redis:
     image: eqalpha/keydb
     restart: always
     networks:
-      - revolt-network
+      - bridge
 
   rabbit:
     image: rabbitmq:4
@@ -31,7 +31,7 @@ services:
     volumes:
       - /share/Container/revolt/revolt_data/data/rabbit:/var/lib/rabbitmq
     networks:
-      - revolt-network
+      - bridge
 
   minio:
     image: minio/minio
@@ -43,7 +43,7 @@ services:
       MINIO_ROOT_PASSWORD: minioautumn
       MINIO_DOMAIN: minio
     networks:
-      revolt-network:
+      bridge:
         aliases:
           - revolt-uploads.minio
           - attachments.minio
@@ -67,7 +67,7 @@ services:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
     networks:
-      - revolt-network
+      - bridge
 
   events:
     image: ghcr.io/revoltchat/bonfire:20250210-1
@@ -80,7 +80,7 @@ services:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
     networks:
-      - revolt-network
+      - bridge
 
   web:
     image: ghcr.io/revoltchat/client:master
@@ -89,7 +89,7 @@ services:
       REVOLT_PUBLIC_URL: https://api.app-xoure.com
     restart: always
     networks:
-      - revolt-network
+      - bridge
 
   autumn:
     image: ghcr.io/revoltchat/autumn:20250210-1
@@ -102,7 +102,7 @@ services:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
     networks:
-      - revolt-network
+      - bridge
 
   january:
     image: ghcr.io/revoltchat/january:20250210-1
@@ -110,7 +110,7 @@ services:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
     networks:
-      - revolt-network
+      - bridge
 
   crond:
     image: ghcr.io/revoltchat/crond:20250210-1-debug
@@ -123,7 +123,7 @@ services:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
     networks:
-      - revolt-network
+      - bridge
 
   pushd:
     image: ghcr.io/revoltchat/pushd:20250210-1
@@ -138,7 +138,7 @@ services:
       - /share/Container/revolt/Revolt.toml:/Revolt.toml
     restart: always
     networks:
-      - revolt-network
+      - bridge
 
   createbuckets:
     image: minio/mc
@@ -154,8 +154,8 @@ services:
       exit 0;
       "
     networks:
-      - revolt-network
+      - bridge
 
 networks:
-  revolt-network:
-    name: revolt-network
+  bridge:
+    name: bridge
