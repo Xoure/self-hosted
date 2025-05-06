@@ -103,6 +103,8 @@ services:
     environment:
       HOSTNAME: revolt.xoure.com
       REVOLT_PUBLIC_URL: https://revolt.xoure.com/api
+      AUTUMN_PUBLIC_URL: https://revolt.xoure.com/autumn
+      JANUARY_PUBLIC_URL: https://revolt.xoure.com/january
 
   # File server
   autumn:
